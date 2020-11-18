@@ -1,6 +1,6 @@
 {
   "name": "electron-winstaller",
-  "version": "0.0.0-development",
+  "version": "4.0.1-b20-packager",
   "description": "Module to generate Windows installers for Electron apps",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

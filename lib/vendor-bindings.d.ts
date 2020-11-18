@@ -1,0 +1,11 @@
+export declare const getVendorPath: () => string;
+export declare const getSquirrelWin32CLIPath: () => string;
+declare type EnvironmentMode = "wine-mono" | "wine64-mono" | "win32";
+export declare const getEnvironmentMode: () => EnvironmentMode;
+export declare const spawnOrUseMono: (cmd: string, args: string[]) => Promise<string>;
+export declare const spawnOrUseWine: (cmd: string, args: string[]) => Promise<string>;
+export declare const useRCEdit: (args: string[]) => Promise<string>;
+export declare const useNuget: (args: string[]) => Promise<string>;
+export declare const useSyncReleases: (args: string[]) => Promise<string>;
+export declare const useSquirrelCLI: (args: string[]) => Promise<string>;
+export {};
