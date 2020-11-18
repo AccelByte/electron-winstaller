@@ -1,3 +1,7 @@
+# FORK INFO
+
+Vendor folder in this repo uses binaries built from https://github.com/AccelByte/Squirrel.Windows/tree/b20-packager-1-9-1
+
 # Electron Installer
 
 [![CircleCI](https://circleci.com/gh/electron/windows-installer.svg?style=shield)](https://circleci.com/gh/electron/windows-installer)
