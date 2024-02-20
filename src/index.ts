@@ -11,6 +11,8 @@ import template from 'lodash.template';
 export { SquirrelWindowsOptions } from './options';
 export { SquirrelWindowsOptions as Options} from './options';
 
+const log = require('debug')('electron-windows-installer:main');
+
 const DEFAULT_LOADING_GIF = path.join(
   __dirname,
   "..",
@@ -62,9 +64,11 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
 
   // eslint-disable-next-line prefer-const
   let { appDirectory, outputDirectory, loadingGif } = options;
-  outputDirectory = path.resolve(outputDirectory || "installer");
+  outputDirectory = path.resolve(outputDirectory || 'installer');
 
-  const appSquirrelExePath = path.join(appDirectory, "Squirrel.exe");
+  const vendorPath = path.join(__dirname, '..', 'vendor');
+  const vendorUpdate = path.join(vendorPath, 'Squirrel.exe');
+  const appUpdate = path.join(appDirectory, 'Squirrel.exe');
 
   await fs.copy(vendorUpdate, appUpdate);
   if (options.setupIcon && (options.skipUpdateIcon !== true)) {
@@ -82,9 +86,17 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
     await spawn(cmd, args);
   }
 
-  loadingGif = loadingGif ? path.resolve(loadingGif) : DEFAULT_LOADING_GIF;
+  const defaultLoadingGif = path.join(__dirname, '..', 'resources', 'install-spinner.gif');
+  loadingGif = loadingGif ? path.resolve(loadingGif) : defaultLoadingGif;
 
-  const { certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken } = options;
+  let {
+    certificateFile,
+    certificatePassword,
+    remoteReleases,
+    signWithParams,
+    signTool,
+    remoteToken,
+  } = options;
 
   const metadata: Metadata = {
     description: '',
@@ -92,42 +104,36 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
   };
 
   if (options.usePackageJson !== false) {
-    const appResources = path.join(appDirectory, "resources");
-    const asarFile = path.join(appResources, "app.asar");
+    const appResources = path.join(appDirectory, 'resources');
+    const asarFile = path.join(appResources, 'app.asar');
     let appMetadata;
 
     if (await fs.pathExists(asarFile)) {
       appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json').toString());
     } else {
-      appMetadata = await fs.readJson(
-        path.join(appResources, "app", "package.json")
-      );
+      appMetadata = await fs.readJson(path.join(appResources, 'app', 'package.json'));
     }
 
-    Object.assign(
-      metadata,
-      {
-        exe: `${appMetadata.name}.exe`,
-        title: appMetadata.productName || appMetadata.name,
-      },
-      appMetadata
-    );
+    Object.assign(metadata, {
+      exe: `${appMetadata.name}.exe`,
+      title: appMetadata.productName || appMetadata.name
+    }, appMetadata);
   }
 
   Object.assign(metadata, options);
 
   if (!metadata.authors) {
-    if (typeof metadata.author === "string") {
+    if (typeof (metadata.author) === 'string') {
       metadata.authors = metadata.author;
     } else {
-      metadata.authors = (metadata.author || ({} as PersonMetadata)).name || "";
+      metadata.authors = (metadata.author || ({} as PersonMetadata)).name || '';
     }
   }
 
   metadata.owners = metadata.owners || metadata.authors;
   metadata.version = convertVersion(metadata.version as string);
   metadata.copyright = metadata.copyright ||
-    `Copyright © ${new Date().getFullYear()} ${metadata.authors || metadata.owners}`;
+    `Copyright Â© ${new Date().getFullYear()} ${metadata.authors || metadata.owners}`;
   metadata.additionalFiles = metadata.additionalFiles || [];
 
   if (await fs.pathExists(path.join(appDirectory, 'swiftshader'))) {
@@ -151,151 +157,105 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
 
   log(`Created NuSpec file:\n${nuspecContent}`);
 
-  const nugetOutput = await createTempDir("si-");
-  const targetNuspecPath = path.join(nugetOutput, metadata.name + ".nuspec");
+  const nugetOutput = await createTempDir('si-');
+  const targetNuspecPath = path.join(nugetOutput, metadata.name + '.nuspec');
 
   await fs.writeFile(targetNuspecPath, nuspecContent);
 
-  // Call NuGet to create our package
-  log(
-    await useNuget([
-      "pack",
-      targetNuspecPath,
-      "-BasePath",
-      appDirectory,
-      "-OutputDirectory",
-      nugetOutput,
-      "-NoDefaultExcludes",
-    ])
-  );
-
-  if (remoteReleases) {
-    log(
-      await useSyncReleases(
-        (() => {
-          switch (true) {
-            case !!remoteToken:
-              return [
-                "-u",
-                remoteReleases,
-                "-r",
-                outputDirectory,
-                "-t",
-                remoteToken as string,
-              ];
-            default:
-              return ["-u", remoteReleases, "-r", outputDirectory];
-          }
-        })()
-      )
-    );
-  }
-
-  const nupkgPath = path.join(
-    nugetOutput,
-    `${metadata.name}.${metadata.version}.nupkg`
-  );
-
-  const releaseArgs = [
-    "--releasify",
-    nupkgPath,
-    "--releaseDir",
-    outputDirectory,
-    "--loadingGif",
-    loadingGif,
+  let cmd = path.join(vendorPath, 'nuget.exe');
+  let args = [
+    'pack', targetNuspecPath,
+    '-BasePath', appDirectory,
+    '-OutputDirectory', nugetOutput,
+    '-NoDefaultExcludes'
   ];
 
-  (() => {
-    switch (signTool) {
-      case "osslsigncode": {
-        if (signWithParams) {
-          return releaseArgs.push("--signWithParams", signWithParams);
-        }
+  if (useMono) {
+    args.unshift(cmd);
+    cmd = monoExe;
+  }
 
-        if (certificateFile && certificatePassword) {
-          return releaseArgs.push(
-            "--signWithParams",
-            `-pkcs12 "${path.resolve(
-              certificateFile
-            )}" -pass "${certificatePassword}"`
-          );
-        }
-        break;
-      }
-      default: {
-        if (
-          signWithParams &&
-          signWithParams.includes("/f") &&
-          signWithParams.includes("/p")
-        ) {
-          return releaseArgs.push("--signWithParams", signWithParams);
-        }
+  // Call NuGet to create our package
+  log(await spawn(cmd, args));
+  const nupkgPath = path.join(nugetOutput, `${metadata.name}.${metadata.version}.nupkg`);
 
-        if (signWithParams && certificateFile && certificatePassword) {
-          return releaseArgs.push(
-            "--signWithParams",
-            `${signWithParams} /a /f "${path.resolve(
-              certificateFile
-            )}" /p "${certificatePassword}"`
-          );
-        }
+  if (remoteReleases) {
+    cmd = path.join(vendorPath, 'SyncReleases.exe');
+    args = ['-u', remoteReleases, '-r', outputDirectory];
 
-        if (certificateFile && certificatePassword) {
-          return releaseArgs.push(
-            "--signWithParams",
-            `/a /f "${path.resolve(
-              certificateFile
-            )}" /p "${certificatePassword}"`
-          );
-        }
-        break;
-      }
+    if (useMono) {
+      args.unshift(cmd);
+      cmd = monoExe;
     }
-  })();
 
-  if (signTool) {
-    releaseArgs.push("--signTool", signTool);
+    if (remoteToken) {
+      args.push('-t', remoteToken);
+    }
+
+    log(await spawn(cmd, args));
+  }
+
+  cmd = path.join(vendorPath, 'Squirrel.exe');
+  args = [
+    '--releasify', nupkgPath,
+    '--releaseDir', outputDirectory,
+    '--loadingGif', loadingGif
+  ];
+
+  if (useMono) {
+    args.unshift(path.join(vendorPath, 'Squirrel-Mono.exe'));
+    cmd = monoExe;
+  }
+
+  if (signWithParams) {
+    args.push('--signWithParams');
+    if (!signWithParams.includes('/f') && !signWithParams.includes('/p') && certificateFile && certificatePassword) {
+      args.push(`${signWithParams} /a /f "${path.resolve(certificateFile)}" /p "${certificatePassword}"`);
+    } else {
+      args.push(signWithParams);
+    }
+  } else if (certificateFile && certificatePassword) {
+    args.push('--signWithParams');
+    args.push(`/a /f "${path.resolve(certificateFile)}" /p "${certificatePassword}"`);
+  }
+
+  if (options.signTool) {
+    args.push("--signTool", options.signTool);
   }
 
   if (options.setupIcon) {
-    releaseArgs.push("--setupIcon");
-    releaseArgs.push(path.resolve(options.setupIcon));
+    args.push('--setupIcon');
+    args.push(path.resolve(options.setupIcon));
   }
 
   if (options.noMsi) {
-    releaseArgs.push("--no-msi");
+    args.push('--no-msi');
   }
 
   if (options.noDelta) {
-    releaseArgs.push("--no-delta");
+    args.push('--no-delta');
   }
 
   if (options.frameworkVersion) {
-    releaseArgs.push("--framework-version");
-    releaseArgs.push(options.frameworkVersion);
+    args.push('--framework-version');
+    args.push(options.frameworkVersion);
   }
 
-  log(await useSquirrelCLI(releaseArgs));
+  log(await spawn(cmd, args));
 
   if (options.fixUpPaths !== false) {
-    log("Fixing up paths");
+    log('Fixing up paths');
 
     if (metadata.productName || options.setupExe) {
-      const setupPath = path.join(
-        outputDirectory,
-        options.setupExe || `${metadata.productName}Setup.exe`
-      );
-      const unfixedSetupPath = path.join(outputDirectory, "Setup.exe");
+      const setupPath = path.join(outputDirectory, options.setupExe || `${metadata.productName}Setup.exe`);
+      const unfixedSetupPath = path.join(outputDirectory, 'Setup.exe');
       log(`Renaming ${unfixedSetupPath} => ${setupPath}`);
       await fs.rename(unfixedSetupPath, setupPath);
     }
 
     if (metadata.productName || options.setupMsi) {
-      const msiPath = path.join(
-        outputDirectory,
-        options.setupMsi || `${metadata.productName}Setup.msi`
-      );
-      const unfixedMsiPath = path.join(outputDirectory, "Setup.msi");
+      const msiPath = path.join(outputDirectory, options.setupMsi || `${metadata.productName}Setup.msi`);
+      const unfixedMsiPath = path.join(outputDirectory, 'Setup.msi');
       if (await fs.pathExists(unfixedMsiPath)) {
         log(`Renaming ${unfixedMsiPath} => ${msiPath}`);
         await fs.rename(unfixedMsiPath, msiPath);
