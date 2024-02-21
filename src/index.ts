@@ -207,17 +207,35 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
     cmd = monoExe;
   }
 
-  if (signWithParams) {
-    args.push('--signWithParams');
-    if (!signWithParams.includes('/f') && !signWithParams.includes('/p') && certificateFile && certificatePassword) {
-      args.push(`${signWithParams} /a /f "${path.resolve(certificateFile)}" /p "${certificatePassword}"`);
-    } else {
-      args.push(signWithParams);
-    }
-  } else if (certificateFile && certificatePassword) {
-    args.push('--signWithParams');
-    args.push(`/a /f "${path.resolve(certificateFile)}" /p "${certificatePassword}"`);
+  if (signTool == "osslsigncode") {    
+      if (signWithParams) {
+        args.push("--signWithParams", signWithParams);
+      }
+
+      if (certificateFile && certificatePassword) {
+        args.push(
+          "--signWithParams",
+          `-pkcs12 "${path.resolve(
+            certificateFile
+          )}" -pass "${certificatePassword}"`
+        );
+      }
+   
   }
+  else { // default signtool.exe
+    if (signWithParams) {          
+      args.push('--signWithParams');
+      if (!signWithParams.includes('/f') && !signWithParams.includes('/p') && certificateFile && certificatePassword) {
+        args.push(`${signWithParams} /a /f "${path.resolve(certificateFile)}" /p "${certificatePassword}"`);
+      } else {
+        args.push(signWithParams);
+      }
+    } else if (certificateFile && certificatePassword) {
+      args.push('--signWithParams');
+      args.push(`/a /f "${path.resolve(certificateFile)}" /p "${certificatePassword}"`);
+    }      
+  }
+
 
   if (options.signTool) {
     args.push("--signTool", options.signTool);
