@@ -265,15 +265,21 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
     log('Fixing up paths');
 
     if (metadata.productName || options.setupExe) {
-      const setupPath = path.join(outputDirectory, options.setupExe || `${metadata.productName}Setup.exe`);
-      const unfixedSetupPath = path.join(outputDirectory, 'Setup.exe');
+      const setupPath = path.join(
+        outputDirectory,
+        options.setupExe || `${metadata.productName}Setup.exe`
+      );
+      const unfixedSetupPath = path.join(outputDirectory, "Setup.exe");
       log(`Renaming ${unfixedSetupPath} => ${setupPath}`);
       await fs.rename(unfixedSetupPath, setupPath);
     }
 
     if (metadata.productName || options.setupMsi) {
-      const msiPath = path.join(outputDirectory, options.setupMsi || `${metadata.productName}Setup.msi`);
-      const unfixedMsiPath = path.join(outputDirectory, 'Setup.msi');
+      const msiPath = path.join(
+        outputDirectory,
+        options.setupMsi || `${metadata.productName}Setup.msi`
+      );
+      const unfixedMsiPath = path.join(outputDirectory, "Setup.msi");
       if (await fs.pathExists(unfixedMsiPath)) {
         log(`Renaming ${unfixedMsiPath} => ${msiPath}`);
         await fs.rename(unfixedMsiPath, msiPath);
