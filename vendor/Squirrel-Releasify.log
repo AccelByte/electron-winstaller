@@ -1,0 +1,56 @@
+﻿[17/07/24 12:00:52] info: Program: Starting Squirrel Updater: --releasify D:\testing extract setup\test\adt-hub-staging-test-1.2.2-alpha5-full.nupkg --releaseDir D:/testing extract setup/New folder --signWithParams /a /f D:/testing extract setup/codesigndecoded.pfx /p NmYUZobBZ9rbA5jQIDo9A2
+[17/07/24 12:00:52] info: Program: Bootstrapper EXE found at:.\Setup.exe
+[17/07/24 12:00:52] fatal: Finished with unhandled exception: System.InvalidOperationException: Source sequence doesn't contain any elements.
+   at Squirrel.EnumerableExtensions.ExtremaBy[TSource,TKey](IEnumerable`1 source, Func`2 keySelector, Func`3 compare)
+   at Squirrel.Update.Program.Releasify(String package, String targetDir, String packagesDir, String bootstrapperExe, String backgroundGif, String signTool, String signingOpts, String baseUrl, String setupIcon, Boolean generateMsi, Boolean packageAs64Bit, String frameworkVersion, Boolean generateDeltas)
+   at Squirrel.Update.Program.executeCommandLine(String[] args)
+   at Squirrel.Update.Program.main(String[] args)
+[17/07/24 12:12:12] info: Program: Starting Squirrel Updater: --releasify D:\testing extract setup\test\adt-hub-staging-test-1.2.2-alpha5-full.nupkg --releaseDir D:/testing extract setup/New folder
+[17/07/24 12:12:12] info: Program: Bootstrapper EXE found at:.\Setup.exe
+[17/07/24 12:12:12] fatal: Finished with unhandled exception: System.InvalidOperationException: Source sequence doesn't contain any elements.
+   at Squirrel.EnumerableExtensions.ExtremaBy[TSource,TKey](IEnumerable`1 source, Func`2 keySelector, Func`3 compare)
+   at Squirrel.Update.Program.Releasify(String package, String targetDir, String packagesDir, String bootstrapperExe, String backgroundGif, String signTool, String signingOpts, String baseUrl, String setupIcon, Boolean generateMsi, Boolean packageAs64Bit, String frameworkVersion, Boolean generateDeltas)
+   at Squirrel.Update.Program.executeCommandLine(String[] args)
+   at Squirrel.Update.Program.main(String[] args)
+[17/07/24 12:12:27] info: Program: Starting Squirrel Updater: --releasify D:\testing extract setup\test\adt-hub-staging-test-1.2.2-alpha5-full.nupkg
+[17/07/24 12:12:27] info: Program: Bootstrapper EXE found at:.\Setup.exe
+[17/07/24 12:12:27] fatal: Finished with unhandled exception: System.InvalidOperationException: Source sequence doesn't contain any elements.
+   at Squirrel.EnumerableExtensions.ExtremaBy[TSource,TKey](IEnumerable`1 source, Func`2 keySelector, Func`3 compare)
+   at Squirrel.Update.Program.Releasify(String package, String targetDir, String packagesDir, String bootstrapperExe, String backgroundGif, String signTool, String signingOpts, String baseUrl, String setupIcon, Boolean generateMsi, Boolean packageAs64Bit, String frameworkVersion, Boolean generateDeltas)
+   at Squirrel.Update.Program.executeCommandLine(String[] args)
+   at Squirrel.Update.Program.main(String[] args)
+[17/07/24 12:12:39] info: Program: Starting Squirrel Updater: --releasify=D:\testing extract setup\test\adt-hub-staging-test-1.2.2-alpha5-full.nupkg
+[17/07/24 12:12:39] info: Program: Bootstrapper EXE found at:.\Setup.exe
+[17/07/24 12:12:39] fatal: Finished with unhandled exception: System.InvalidOperationException: Source sequence doesn't contain any elements.
+   at Squirrel.EnumerableExtensions.ExtremaBy[TSource,TKey](IEnumerable`1 source, Func`2 keySelector, Func`3 compare)
+   at Squirrel.Update.Program.Releasify(String package, String targetDir, String packagesDir, String bootstrapperExe, String backgroundGif, String signTool, String signingOpts, String baseUrl, String setupIcon, Boolean generateMsi, Boolean packageAs64Bit, String frameworkVersion, Boolean generateDeltas)
+   at Squirrel.Update.Program.executeCommandLine(String[] args)
+   at Squirrel.Update.Program.main(String[] args)
+[17/07/24 20:50:17] info: Program: Starting Squirrel Updater: --releasify D:\testing-extract-setup\test1\adt-hub-staging-test-1.2.2-alpha5-full.nupkg
+[17/07/24 20:50:17] info: Program: Bootstrapper EXE found at:.\Setup.exe
+[17/07/24 20:50:17] fatal: Finished with unhandled exception: System.InvalidOperationException: Source sequence doesn't contain any elements.
+   at Squirrel.EnumerableExtensions.ExtremaBy[TSource,TKey](IEnumerable`1 source, Func`2 keySelector, Func`3 compare)
+   at Squirrel.Update.Program.Releasify(String package, String targetDir, String packagesDir, String bootstrapperExe, String backgroundGif, String signTool, String signingOpts, String baseUrl, String setupIcon, Boolean generateMsi, Boolean packageAs64Bit, String frameworkVersion, Boolean generateDeltas)
+   at Squirrel.Update.Program.executeCommandLine(String[] args)
+   at Squirrel.Update.Program.main(String[] args)
+[18/07/24 08:34:23] info: Program: Starting Squirrel Updater: --releasify D:\\testing-extract-setup\\test1\\adt-hub-staging-test-1.2.2-alpha5-full.nupkg --releaseDir D:\\testing-extract-setup\\hasil --loadingGif D:\\Project\\Avenger\\avengers-frontends\\apps\\blackbox-desktop\\src\\shared\\assets\\build\\splash.gif --setupIcon D:\\Project\\Avenger\\avengers-frontends\\apps\\blackbox-desktop\\src\\shared\\assets\\build\\icon.ico --no-msi
+[18/07/24 08:34:23] info: Program: Bootstrapper EXE found at:.\Setup.exe
+[18/07/24 08:34:23] fatal: Finished with unhandled exception: System.InvalidOperationException: Source sequence doesn't contain any elements.
+   at Squirrel.EnumerableExtensions.ExtremaBy[TSource,TKey](IEnumerable`1 source, Func`2 keySelector, Func`3 compare)
+   at Squirrel.Update.Program.Releasify(String package, String targetDir, String packagesDir, String bootstrapperExe, String backgroundGif, String signTool, String signingOpts, String baseUrl, String setupIcon, Boolean generateMsi, Boolean packageAs64Bit, String frameworkVersion, Boolean generateDeltas)
+   at Squirrel.Update.Program.executeCommandLine(String[] args)
+   at Squirrel.Update.Program.main(String[] args)
+[18/07/24 08:36:26] info: Program: Starting Squirrel Updater: --releasify D:\\testing-extract-setup\\test1\\adt-hub-staging-test-1.2.2-alpha5-full.nupkg --releaseDir D:\\testing-extract-setup\\hasil --loadingGif D:\\Project\\Avenger\\avengers-frontends\\apps\\blackbox-desktop\\src\\shared\\assets\\build\\splash.gif --setupIcon D:\\Project\\Avenger\\avengers-frontends\\apps\\blackbox-desktop\\src\\shared\\assets\\build\\icon.ico --no-msi
+[18/07/24 08:36:26] info: Program: Bootstrapper EXE found at:.\Setup.exe
+[18/07/24 08:36:26] fatal: Finished with unhandled exception: System.InvalidOperationException: Source sequence doesn't contain any elements.
+   at Squirrel.EnumerableExtensions.ExtremaBy[TSource,TKey](IEnumerable`1 source, Func`2 keySelector, Func`3 compare)
+   at Squirrel.Update.Program.Releasify(String package, String targetDir, String packagesDir, String bootstrapperExe, String backgroundGif, String signTool, String signingOpts, String baseUrl, String setupIcon, Boolean generateMsi, Boolean packageAs64Bit, String frameworkVersion, Boolean generateDeltas)
+   at Squirrel.Update.Program.executeCommandLine(String[] args)
+   at Squirrel.Update.Program.main(String[] args)
+[18/07/24 08:39:06] info: Program: Starting Squirrel Updater: --releasify D:\\testing-extract-setup\\test1\\adt-hub-staging-test-1.2.2-alpha5-full.nupkg --releaseDir D:\\testing-extract-setup\\hasil --loadingGif D:\\Project\\Avenger\\avengers-frontends\\apps\\blackbox-desktop\\src\\shared\\assets\\build\\splash.gif --setupIcon D:\\Project\\Avenger\\avengers-frontends\\apps\\blackbox-desktop\\src\\shared\\assets\\build\\icon.ico --no-msi
+[18/07/24 08:39:06] info: Program: Bootstrapper EXE found at:.\Setup.exe
+[18/07/24 08:39:06] fatal: Finished with unhandled exception: System.InvalidOperationException: Source sequence doesn't contain any elements.
+   at Squirrel.EnumerableExtensions.ExtremaBy[TSource,TKey](IEnumerable`1 source, Func`2 keySelector, Func`3 compare)
+   at Squirrel.Update.Program.Releasify(String package, String targetDir, String packagesDir, String bootstrapperExe, String backgroundGif, String signTool, String signingOpts, String baseUrl, String setupIcon, Boolean generateMsi, Boolean packageAs64Bit, String frameworkVersion, Boolean generateDeltas)
+   at Squirrel.Update.Program.executeCommandLine(String[] args)
+   at Squirrel.Update.Program.main(String[] args)
